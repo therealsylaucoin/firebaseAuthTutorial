@@ -22,7 +22,7 @@
                 <li class="logged-in" style="display: none">
                     <a href="#" class="grey-text" id="logout">Logout</a>
                 </li>
-                <li class="logged-in" style="display: none">
+                <li class="admin" style="display: none">
                     <a href="#" class="grey-text modal-trigger" data-target="modal-create">Create Guide</a>
                 </li>
                 <li class="logged-out" style="display: none">
@@ -34,6 +34,12 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Admin actions -->
+    <form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: none;">
+        <input type="email" placeholder="User email" id="admin-email" required/>
+        <button class="btn-small yellow darken-2 z-depth-o">Make admin</button>
+    </form>
 
     <!-- SIGN UP MODAL -->
     <div id="modal-signup" class="modal">
@@ -53,6 +59,7 @@
                     <label for="signup-bio">One line bio</label>
                 </div>
                 <button class="btn yellow darken-2 z-depth-0">Sign up</button>
+                <p class="error pink-text center-align"></p>
             </form>
         </div>
     </div>
@@ -71,6 +78,7 @@
                     <label for="login-password">Your password</label>
                 </div>
                 <button class="btn yellow darken-2 z-depth-0">Login</button>
+                <p class="error pink-text center-align"></p>
             </form>
         </div>
     </div>
@@ -114,6 +122,7 @@
     https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
 
     <script>
         // Your web app's Firebase configuration
@@ -129,6 +138,7 @@
         //make auth and firestore references
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const functions = firebase.functions();
 
         //update firestore settings
         db.settings({timestampsInSnapshots: true});

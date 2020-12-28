@@ -1,20 +1,34 @@
+//add admin cloud function
+const adminForm = document.querySelector('.admin-actions');
+adminForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const adminEmail = document.querySelector('#admin-email').value;
+    const addAdminRole = functions.httpsCallable('addAdminRole');//reference to the function
+    addAdminRole( {email: adminEmail} ).then(
+        result => console.log(result)
+    );
+})
+
 //listen for auth status change (is user logged in?)
 auth.onAuthStateChanged(user => {
-    setupUI(user);
+    // setupUI(user);
     if (user) {
+        //check if user is admin (claim)
+        user.getIdTokenResult().then(idTokenResult => {
+            user.admin = idTokenResult.claims.admin;
+            setupUI(user);
+        })
         // if user is logged in - get data
         //instead of .get.then, use .onSnapshot (proper to firebase) this will make it update in realtime
         db.collection('Guides').onSnapshot((snapshot) => {
         setupGuides(snapshot.docs);
-        // setupUI(user);
+        }, err => { //instead of .catch
+            console.log(err);
         })
-        // .catch(err => {
-        //     console.log(err.message);
-        // })
     } else {
         //if user is logged out, call the setupGuides function with an empty array, so that we get no data
+        setupUI(user);
         setupGuides([]);
-        // setupUI(user);
     }
 });
 
@@ -59,6 +73,9 @@ signupForm.addEventListener('submit', (e) => {
         const modal = document.querySelector('#modal-signup');
         M.Modal.getInstance(modal).close();
         signupForm.reset();
+        signupForm.querySelector('.error').innerHTML = '';
+    }).catch(err => {
+        signupForm.querySelector('.error').innerHTML = err.message;
     });
 });
 
@@ -82,12 +99,16 @@ loginForm.addEventListener('submit', (e) => {
     const password = loginForm['login-password'].value;
 
     //login user
-    auth.signInWithEmailAndPassword(email, password).then((cred) => {
+    auth.signInWithEmailAndPassword(email, password)
+        .then((cred) => {
         //close the login modal and reset form
         const modal = document.querySelector('#modal-login');
         M.Modal.getInstance(modal).close();
         signupForm.reset();
+        loginForm.querySelector('.error').innerHTML = '';
         // console.log(cred.user);
+    }).catch(err => {
+        loginForm.querySelector('.error').innerHTML = err.message;
     })
 })
 
