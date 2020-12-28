@@ -93,7 +93,7 @@ const loginForm = document.querySelector('#login-form');
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-     //get the user info(email and password)
+    //get the user info(email and password)
     //use bracket notation to get ids
     const email = loginForm['login-email'].value;
     const password = loginForm['login-password'].value;
@@ -112,3 +112,15 @@ loginForm.addEventListener('submit', (e) => {
     })
 })
 
+
+const resetPasswordFunction = () => {
+    const email = document.querySelector('#login-email').value;
+
+    auth.sendPasswordResetEmail(email)
+    .then(() => {console.log('Password email sent')
+    })
+}
+
+
+const resetButton = document.querySelector('.reset');
+resetButton.addEventListener('click', resetPasswordFunction);
